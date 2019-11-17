@@ -29,22 +29,7 @@ public class CS245A1 {
             }
         }
     }
-    private static void readDict1(){
-        // read english.0
-        try {
-            reader = new BufferedReader(new FileReader("english.0"));
-            String line = reader.readLine();
-            while (line != null) {
-                dictionary.insert(line.toLowerCase());
-                //line = reader.readLine();
-            }
-            reader.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    
     private static void readDictFromUrl() throws Exception {
         String url = "https://raw.githubusercontent.com/magsilva/jazzy/master/resource/dict/english.0";
         try {
