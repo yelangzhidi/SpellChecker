@@ -36,7 +36,7 @@ public class CS245A1 {
             String line = reader.readLine();
             while (line != null) {
                 dictionary.insert(line.toLowerCase());
-                line = reader.readLine();
+                //line = reader.readLine();
             }
             reader.close();
         } catch (FileNotFoundException e) {
@@ -46,7 +46,7 @@ public class CS245A1 {
         }
     }
     private static void readDictFromUrl() throws Exception {
-        String url = "https://raw.githubusercontent.com/yelangzhidi/SpellChecker/master/english.0";
+        String url = "https://raw.githubusercontent.com/magsilva/jazzy/master/resource/dict/english.0";
         try {
             URL myURL = new URL(url);
             URLConnection connection = myURL.openConnection();
