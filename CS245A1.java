@@ -1,4 +1,6 @@
 import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.*;
 
 public class CS245A1 {
@@ -43,20 +45,41 @@ public class CS245A1 {
             e.printStackTrace();
         }
     }
-    private static void readDict(){
-
+    private static void readDictFromUrl() throws Exception {
+        String url = "https://raw.githubusercontent.com/yelangzhidi/SpellChecker/master/english.0";
+        try {
+            URL myURL = new URL(url);
+            URLConnection connection = myURL.openConnection();
+            reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String line = reader.readLine();
+            while (line != null) {
+                dictionary.insert(line.toLowerCase());
+                line = reader.readLine();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            reader.close();
+        }
     }
     private static void spellchecker(String input, String output){
         // read input.txt and write output.txt
+
         try {
+            File out = new File(output);
+            out.createNewFile();
             reader = new BufferedReader(new FileReader(input));
             writer = new BufferedWriter(new FileWriter(output));
             String line = reader.readLine();
             while (line != null) {
                 if(dictionary.search(line))
                     writer.write(line+"\n");
-                else
-                    writer.write("need suggest"+"\n");//dictionary.suggest(line);
+                else{
+                    for (String suggestion: dictionary.suggest(line))
+                        if(suggestion!= null)
+                            writer.write(suggestion+" ");
+                    writer.write("\n");
+                }
                 line = reader.readLine();
             }
             reader.close();
@@ -67,9 +90,9 @@ public class CS245A1 {
             e.printStackTrace();
         }
     }
-    public static void main(String args[]){
+    public static void main(String args[]) throws Exception {
         setProperty();
-        readDict1();
+        readDictFromUrl();
         spellchecker(args[0],args[1]);
     }
 }
