@@ -7,21 +7,26 @@ public class CS245A1 {
     private static BufferedReader reader;
     private static BufferedWriter writer;
     private static Storage dictionary;
-    private static void setProperty(){
+
+    /**
+     *  Set the dictionary to type trie or type tree depend on A1properties.txt, the default is trie.
+     * @throws Exception If an I/O error occurs
+     */
+    private static void setProperty() throws Exception {
         Properties storage = new Properties();
-        // Set property
         try {
             final String properties = "A1properties.txt";
             reader = new BufferedReader(new FileReader(properties));
             String[] str = reader.readLine().split("=");
             storage.setProperty(str[0],str[1]);
-            reader.close();
+
         } catch (FileNotFoundException e) {
             storage.setProperty("storage","trie");
         } catch (IOException e) {
             e.printStackTrace();
         }
         finally {
+            reader.close();
             String dataStruct = storage.getProperty("storage");
             if (dataStruct.equals("trie")){
                 dictionary = new Trie();
@@ -31,6 +36,10 @@ public class CS245A1 {
         }
     }
 
+    /**
+     *  Read Dictionary file english.0 from the original github URL
+     * @throws Exception If an I/O error occurs
+     */
     private static void readDictFromUrl() throws Exception {
         String url = "https://raw.githubusercontent.com/magsilva/jazzy/master/resource/dict/english.0";
         try {
@@ -49,8 +58,14 @@ public class CS245A1 {
             reader.close();
         }
     }
-    private static void spellchecker(String input, String output){
-        // read input.txt and write output.txt
+
+    /**
+     *  Read input and check it, if correct write it into output, if not give some suggestion into output file.
+     * @param input input file
+     * @param output output file
+     * @throws IOException If an I/O error occurs
+     */
+    private static void spellchecker(String input, String output) throws IOException {
 
         try {
             File out = new File(output);
@@ -69,12 +84,15 @@ public class CS245A1 {
                 }
                 line = reader.readLine();
             }
-            reader.close();
-            writer.close();
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        finally {
+            reader.close();
+            writer.close();
         }
     }
     public static void main(String args[]) throws Exception {

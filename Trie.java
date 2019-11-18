@@ -1,5 +1,8 @@
 import java.util.Arrays;
 
+/**
+ * Data Structure Trie
+ */
 public class Trie implements Storage{
     private TrieNode root;
     private int minLevDist;
@@ -9,16 +12,30 @@ public class Trie implements Storage{
         root = new TrieNode();
     }
 
+    /**
+     * Insert word into Trie
+     * @param word String in dictionary
+     */
     @Override
-    public void insert(String item) {
-        root = insert(root, item.toCharArray());
+    public void insert(String word) {
+        root = insertHelper(root, word.toCharArray());
     }
 
+    /**
+     * Search the word in the Trie or not
+     * @param word String want to search
+     * @return boolean true if word in Trie, false if not
+     */
     @Override
-    public boolean search(String item) {
-        return search(root, item.toCharArray());
+    public boolean search(String word) {
+        return searchHelper(root, word.toCharArray());
     }
 
+    /**
+     * The possible correct words in the Trie
+     * @param word String want to suggest
+     * @return String Array up to 3
+     */
     @Override
     public String[] suggest(String word) {
         result = new String[3];
@@ -30,12 +47,18 @@ public class Trie implements Storage{
             currentRow[i] = i;
         for(int i = 0; i < 26; i++) {
             if(root.children[i]!= null)
-                suggest(root.children[i], (char)(i+'a'), "", word, currentRow);
+                suggestHelper(root.children[i], (char)(i+'a'), "", word, currentRow);
         }
         return result;
     }
-
-    private TrieNode insert(TrieNode node, char[] letters){
+    // Helper Functions:
+    /**
+     * The recursive insert
+     * @param node current node are using
+     * @param letters Char array the word left
+     * @return node after modified.
+     */
+    private TrieNode insertHelper(TrieNode node, char[] letters){
         if(node == null){
             node = new TrieNode();
         }
@@ -44,23 +67,38 @@ public class Trie implements Storage{
             return node;
         }
         if(letters[0] == '\'')
-            node.children[26] = insert(node.children[26], Arrays.copyOfRange(letters, 1, letters.length));
+            node.children[26] = insertHelper(node.children[26], Arrays.copyOfRange(letters, 1, letters.length));
         else
-            node.children[letters[0] - 'a'] = insert(node.children[letters[0] - 'a'],Arrays.copyOfRange(letters, 1, letters.length));
+            node.children[letters[0] - 'a'] = insertHelper(node.children[letters[0] - 'a'],Arrays.copyOfRange(letters, 1, letters.length));
         return node;
     }
 
-    private boolean search(TrieNode node, char[] letters){
+    /**
+     * The recursive search
+     * @param node current node are using
+     * @param letters Char array the word left
+     * @return boolean true if letter in trie
+     */
+    private boolean searchHelper(TrieNode node, char[] letters){
         if(node == null)
             return false;
         if(letters.length == 0)
             return node.isWord;
         if (letters[0] == '\'')
-            return search(node.children[26], Arrays.copyOfRange(letters, 1, letters.length));
+            return searchHelper(node.children[26], Arrays.copyOfRange(letters, 1, letters.length));
         else
-            return search(node.children[letters[0] - 'a'], Arrays.copyOfRange(letters, 1, letters.length));
+            return searchHelper(node.children[letters[0] - 'a'], Arrays.copyOfRange(letters, 1, letters.length));
     }
-    private void suggest(TrieNode node, char letter, String prefix, String word, int[] previousRow){
+
+    /**
+     *  The recursive suggest use find min LevenShtein Distance to find closest 3 String in trie
+     * @param node current node are using
+     * @param letter current node represent letter
+     * @param prefix the previous nodes we have pass
+     * @param word the target incorrect word
+     * @param previousRow the last row of LevenShetein Distance table
+     */
+    private void suggestHelper(TrieNode node, char letter, String prefix, String word, int[] previousRow){
         int size = previousRow.length;
         int[] currentRow = new int[size];
         currentRow[0] = previousRow[0] + 1;
@@ -93,9 +131,9 @@ public class Trie implements Storage{
             for(int i = 0; i < node.children.length; i++)
                 if(node.children[i] != null)
                     if(i==26)
-                        suggest(node.children[i],'\'',prefix+letter,word,currentRow);
+                        suggestHelper(node.children[i],'\'',prefix+letter,word,currentRow);
                     else
-                        suggest(node.children[i],(char)(i+'a'),prefix+letter,word,currentRow);
+                        suggestHelper(node.children[i],(char)(i+'a'),prefix+letter,word,currentRow);
         }
     }
 }
