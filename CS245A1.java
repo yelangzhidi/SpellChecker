@@ -22,14 +22,15 @@ public class CS245A1 {
             e.printStackTrace();
         }
         finally {
-            if (storage.get("storage") == "tree"){
-                dictionary = new Tree();
-            } else {
+            String dataStruct = storage.getProperty("storage");
+            if (dataStruct.equals("trie")){
                 dictionary = new Trie();
+            } else {
+                dictionary = new Tree();
             }
         }
     }
-    
+
     private static void readDictFromUrl() throws Exception {
         String url = "https://raw.githubusercontent.com/magsilva/jazzy/master/resource/dict/english.0";
         try {
@@ -38,7 +39,8 @@ public class CS245A1 {
             reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String line = reader.readLine();
             while (line != null) {
-                dictionary.insert(line.toLowerCase());
+                if(!line.equals(""))
+                    dictionary.insert(line.toLowerCase());
                 line = reader.readLine();
             }
         } catch (Exception e) {

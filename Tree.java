@@ -50,7 +50,16 @@ public class Tree implements Storage {
 
     @Override
     public String[] suggest(String item) {
-        return new String[0];// need implement
+
+        return suggestHelper(item, root);
+    }
+    private String[] suggestHelper(String item, TreeNode treeNode){
+        if (treeNode.left == null||treeNode.right == null)
+            return new String[]{treeNode.data};
+        if (treeNode.data.compareTo(item) > 0)
+            return suggestHelper(item, treeNode.left);
+        else
+            return suggestHelper(item, treeNode.right);
     }
     private int height(TreeNode treeNode){
         return treeNode == null? -1 : treeNode.height;

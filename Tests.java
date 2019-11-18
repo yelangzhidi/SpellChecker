@@ -23,4 +23,12 @@ public class Tests {
         for(String letters:trie.suggest("an"))
             System.out.print(letters);
     }
+    @Test
+    public void testTreeInsert(){
+        Tree tree = new Tree();
+        tree.insert("abb");
+        tree.insert("apple");
+        tree.insert("afgo");
+        tree.insert("afgxyz");
+    }
 }

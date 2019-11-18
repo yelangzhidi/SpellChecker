@@ -3,8 +3,8 @@ import java.util.Arrays;
 public class Trie implements Storage{
     private TrieNode root;
     private int minLevDist;
-    private String[] result = new String[3];
-    private int wordCount = 0;
+    private String[] result;
+    private int wordCount;
     public Trie(){
         root = new TrieNode();
     }
@@ -21,6 +21,8 @@ public class Trie implements Storage{
 
     @Override
     public String[] suggest(String word) {
+        result = new String[3];
+        wordCount = 0;
         minLevDist = Integer.MAX_VALUE;
         int wordLength = word.length();
         int[] currentRow = new int[wordLength+1];
@@ -30,7 +32,7 @@ public class Trie implements Storage{
             if(root.children[i]!= null)
                 suggest(root.children[i], (char)(i+'a'), "", word, currentRow);
         }
-        return result;// need implement
+        return result;
     }
 
     private TrieNode insert(TrieNode node, char[] letters){
@@ -90,7 +92,10 @@ public class Trie implements Storage{
         if(minimumElement < minLevDist) {
             for(int i = 0; i < node.children.length; i++)
                 if(node.children[i] != null)
-                    suggest(node.children[i],(char)(i+'a'),prefix+letter,word,currentRow);
+                    if(i==26)
+                        suggest(node.children[i],'\'',prefix+letter,word,currentRow);
+                    else
+                        suggest(node.children[i],(char)(i+'a'),prefix+letter,word,currentRow);
         }
     }
 }
